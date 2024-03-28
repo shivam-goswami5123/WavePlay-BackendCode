@@ -13,4 +13,11 @@ app.use(express.urlencoded({extended:true,limit:'16kb'}));
 app.use(express.static("public"));
 app.use(cookieParser());
 
+//routes import
+import userRouter from "./routes/user.routes.js"; //we can give custom names only when export is default
+
+//routes declaration
+app.use("/api/v1/users", userRouter); //good standard practice
+//when this routes on url hits userRouter activates
+
 export {app};
