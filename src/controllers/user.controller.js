@@ -215,24 +215,30 @@ const logoutUser=asyncHandler(async(req,res)=>{
 
 const refreshAccessToken = asyncHandler(async(req,res)=>{
     //get refreshtoken from cookies or from body(if using mobile app)
-    const incomingRefreshToken = req.cookies.accessToken || req.body.accessToken;
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
 
     //validate if not empty
+    //console.log(incomingRefreshToken);
     if(!incomingRefreshToken){
         throw new ApiError(404,"Empty or Invalid Refresh Token");
     }
-
     try {
-        const decodedToken=jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRET);
+        const decodedToken=jwt.verify(
+            incomingRefreshToken,
+            process.env.REFRESH_TOKEN_SECRET
+            );
     
+       console.log(decodedToken); 
+
         const user=await User.findById(decodedToken?._id);
-    
+        //console.log(user);
+
         if(!user){
             throw new ApiError(401,"Unauthorized Access or Invalid Token");
         }
-    
+     
         //validate with db stored refreshToken
-        if(incomingRefreshToken !== user?.refreshToken){
+        if(incomingRefreshToken !== user.refreshToken){
             throw new ApiError(401,"Unauthorized Access or Invalid Token or Token Expired");
         }
     
@@ -242,12 +248,12 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
             secure:true
         }
     
-        const {accessToken,newRefreshToken} = await generateAccessTokenAndRefreshToken(user._id);
+        const {accessToken,newRefreshToken} = await generateAccessTokenAndRefreshToken(user?._id);
     
         return res
         .status(200)
         .cookie("accessToken",accessToken,options)
-        .cookie("refreshToken",refreshToken,options)
+        .cookie("refreshToken",newRefreshToken,options)
         .json(
             new ApiResponse(
                 200,
