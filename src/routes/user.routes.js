@@ -20,6 +20,7 @@ router.route("/register").post(
         ]
     ),
     registerUser);
+// whenever /register in url hits it registerUser activates
 
 router.route("/login").post(loginUser);
 
@@ -27,6 +28,6 @@ router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT,logoutUser);
 router.route("/refresh-token").post(refreshAccessToken);
 
-// whenever /register in url hits it registerUser activates
+
 
 export default router;
