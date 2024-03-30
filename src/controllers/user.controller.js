@@ -268,6 +268,124 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
 
 });
 
+const changeUserPassword = asyncHandler( async(req,res)=>{
+
+    const {oldPassword , newPassword}=req.body;
+
+    const user=await User.findById(req.user?._id);
+    const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+
+    if(!isPasswordCorrect){
+        throw new ApiError(400,"Invalid User Password");
+    }
+
+    user.password=newPassword;
+
+    user.save({ validateBeforeSave:false });
+
+    return res.
+    status(200)
+    .json( new ApiResponse(200,{},"Password Changed Successfully"));
+
+});
+
+const getCurrentUser = asyncHandler( async(req,res) =>{
+
+    const user=await User.findById(req.user?._id);
+    if(!user){
+        throw new ApiError(400,"User Not Found");
+    }
+
+
+    return res.
+    status(200)
+    .json( new ApiResponse(200,{user},"Current User Fetched"));
+});
+
+const updateAccountDetails=asyncHandler(async(req,res)=>{
+    const {fullName,username,email}=req.body; //if wants to update all three fields
+
+    if(!(fullName || username || email)){
+        throw new ApiError(404,"User Not Found or Invalid Details");
+    }
+
+    const user=await findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set:{
+                fullName:fullName,
+                username:username,
+                email:email
+            }
+        },
+        {new:true}
+        )
+        .select("-password");
+
+        return res
+        .status(200)
+        .json( new ApiResponse(200,user,"Account Details Changed Successfully"));
+});
+
+const updateUserAvatar=asyncHandler(async(req,res)=>{
+    const avatarLocalPath=req.file?.path; //multer
+
+    if(!avatarLocalPath){
+        throw new ApiError(400,"Missing Avatar Details");
+    }
+
+    const avatar=await uploadOnCloudinary.upload(avatarLocalPath);
+    console.log(avatar);
+
+    if(!avatar.url){
+        throw new ApiError(400,"Avatar URL Not Found");
+    }
+
+    const user=await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            avatar:avatar.url
+        },
+        {new:true}
+    ).select("-password");
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,user,"Avatar Changed Successfully")
+    )
+});
+
+const updateUserCoverImage = asyncHandler(async(req,res)=>{
+    const coverImageLocalPath = req.file?.path; //multer : upload single file : req.file
+
+    if(!coverImageLocalPath){
+        throw new ApiError(400,"CoverImage Path Not Found");
+    }
+
+    const coverImage=await uploadOnCloudinary.upload(coverImagePath);
+    console.log(coverImage);
+
+    if(!coverImage.url){
+        throw new ApiError(400,"Cover Image URL Not Found");
+    }
+
+    const user=await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            coverImage:coverImage.url
+        },
+        {new:true}
+    ).select("-password");
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,user,"CoverImage Changed Successfully")
+    )
+})
+
 //after getting control from user.routes.js , registerUser function runs and user will be registered
 
-export {registerUser,loginUser,logoutUser,refreshAccessToken};
+export {registerUser,loginUser,logoutUser,refreshAccessToken,changeUserPassword,getCurrentUser
+,updateAccountDetails,updateUserAvatar,updateUserCoverImage};
