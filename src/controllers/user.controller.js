@@ -3,6 +3,7 @@ import {ApiError} from "../utils/ApiError.js";
 import {User} from "../models/user.models.js";
 import {uploadOnCloudinary} from "../utils/cloudinary.upload.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
+import jwt from "jsonwebtoken";
 
 const generateAccessTokenAndRefreshToken=async(user_id)=>{
     try{
@@ -209,9 +210,58 @@ const logoutUser=asyncHandler(async(req,res)=>{
     .clearCookie("accessToken",options)
     .clearCookie("refreshToken",options)
     .json(new ApiResponse(200,{},"User Logged Out"));
+
+});
+
+const refreshAccessToken = asyncHandler(async(req,res)=>{
+    //get refreshtoken from cookies or from body(if using mobile app)
+    const incomingRefreshToken = req.cookies.accessToken || req.body.accessToken;
+
+    //validate if not empty
+    if(!incomingRefreshToken){
+        throw new ApiError(404,"Empty or Invalid Refresh Token");
+    }
+
+    try {
+        const decodedToken=jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRET);
     
-})
+        const user=await User.findById(decodedToken?._id);
+    
+        if(!user){
+            throw new ApiError(401,"Unauthorized Access or Invalid Token");
+        }
+    
+        //validate with db stored refreshToken
+        if(incomingRefreshToken !== user?.refreshToken){
+            throw new ApiError(401,"Unauthorized Access or Invalid Token or Token Expired");
+        }
+    
+        //generate new accessToken and refreshToken for that user
+        const options={
+            httpOnly:true,
+            secure:true
+        }
+    
+        const {accessToken,newRefreshToken} = await generateAccessTokenAndRefreshToken(user._id);
+    
+        return res
+        .status(200)
+        .cookie("accessToken",accessToken,options)
+        .cookie("refreshToken",refreshToken,options)
+        .json(
+            new ApiResponse(
+                200,
+                {accessToken,refreshToken:newRefreshToken},
+                "New Tokens Generated"
+            )
+        );
+    
+    } catch (error) {
+        throw new ApiError(401 , error?.message || "Invalid Token");
+    }
+
+});
 
 //after getting control from user.routes.js , registerUser function runs and user will be registered
 
-export {registerUser,loginUser,logoutUser};
+export {registerUser,loginUser,logoutUser,refreshAccessToken};
