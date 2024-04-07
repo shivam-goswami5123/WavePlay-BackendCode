@@ -1,9 +1,10 @@
 import {asyncHandler} from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js";
 import {User} from "../models/user.models.js";
-import {uploadOnCloudinary} from "../utils/cloudinary.upload.js";
+import {uploadOnCloudinary,deleteOnCloudinary} from "../utils/cloudinary.upload.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import mongoose , {Schema} from "mongoose";
 
 const generateAccessTokenAndRefreshToken=async(user_id)=>{
     try{
@@ -295,7 +296,7 @@ const changeUserPassword = asyncHandler( async(req,res)=>{
 
 const getCurrentUser = asyncHandler( async(req,res) =>{
 
-    const user=await User.findById(req.user?._id);
+    const user=await User.findById(req.user?._id).select("-password -refreshToken");
     if(!user){
         throw new ApiError(400,"User Not Found");
     }
@@ -313,7 +314,7 @@ const updateAccountDetails=asyncHandler(async(req,res)=>{
         throw new ApiError(404,"User Not Found or Invalid Details");
     }
 
-    const user=await findByIdAndUpdate(
+    const user=await User.findByIdAndUpdate(
         req.user?._id,
         {
             $set:{
@@ -333,12 +334,20 @@ const updateAccountDetails=asyncHandler(async(req,res)=>{
 
 const updateUserAvatar=asyncHandler(async(req,res)=>{
     const avatarLocalPath=req.file?.path; //multer
-
+    
     if(!avatarLocalPath){
         throw new ApiError(400,"Missing Avatar Details");
     }
+    /*
+    const oldImageUrl=req.user?.avatar;
 
-    const avatar=await uploadOnCloudinary.upload(avatarLocalPath);
+    if(!oldImageUrl){
+        throw new ApiError(404,"Old Image URL Not Found");
+    }
+    */
+
+
+    const avatar=await uploadOnCloudinary(avatarLocalPath);
     console.log(avatar);
 
     if(!avatar.url){
@@ -352,6 +361,10 @@ const updateUserAvatar=asyncHandler(async(req,res)=>{
         },
         {new:true}
     ).select("-password");
+    /*
+    //TODO : Delete Old Image From Cloudinary
+    await deleteOnCloudinary(oldImageUrl);
+    */
 
     return res
     .status(200)
@@ -362,12 +375,23 @@ const updateUserAvatar=asyncHandler(async(req,res)=>{
 
 const updateUserCoverImage = asyncHandler(async(req,res)=>{
     const coverImageLocalPath = req.file?.path; //multer : upload single file : req.file
+    
 
     if(!coverImageLocalPath){
         throw new ApiError(400,"CoverImage Path Not Found");
     }
+    /*
+    const oldImageUrl = req.user?.coverImage;
+    console.log(oldImageUrl); 
+    if(!oldImageUrl){
+        throw new ApiError(404,"Old Image URL Not Found");
+    }
+    //TODO : Delete Old Image From Cloudinary
+    await deleteOnCloudinary(oldImageUrl);
+    */
 
-    const coverImage=await uploadOnCloudinary.upload(coverImagePath);
+
+    const coverImage=await uploadOnCloudinary(coverImageLocalPath);
     console.log(coverImage);
 
     if(!coverImage.url){
@@ -382,6 +406,9 @@ const updateUserCoverImage = asyncHandler(async(req,res)=>{
         {new:true}
     ).select("-password");
 
+    
+    
+
     return res
     .status(200)
     .json(
@@ -391,6 +418,7 @@ const updateUserCoverImage = asyncHandler(async(req,res)=>{
 
 const getUserChannelProfile = asyncHandler(async(req,res)=>{
     const {username} = req.params;
+    console.log(username);
 
     if(!username?.trim()){
         throw new ApiError(404,"User Not Found");
@@ -422,12 +450,30 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
         {
             //add more fields to each document of user model
             $addFields:{
+                /*MongoServerError: PlanExecutor error during aggregation :: caused by :: The argument to $size must be an array, but was of type: missing
+
                 subscribersCount:{
                     $size:"$subscribers" //as 'subscribers' is field name so use '$' before it
                 },
                 channelsSubscribedToCount:{
                     $size:"$subscribedTo"
-                },
+                }
+                */
+                //Error Resolve
+                subscribersCount: {
+                    $cond: {
+                      if: { $isArray: { $ifNull: ["$subscribers", []] } },
+                      then: { $size: { $ifNull: ["$subscribers", []] } },
+                      else: 0
+                    }
+                  },
+                  channelsSubscribedToCount: {
+                    $cond: {
+                      if: { $isArray: { $ifNull: ["$subscribedTo", []] } },
+                      then: { $size: { $ifNull: ["$subscribedTo", []] } },
+                      else: 0
+                    }
+                  },
                 isSubscribed:{
                     //read more about it
                     $cond:{
