@@ -1,7 +1,19 @@
-# VideoTube 
+# Video Hosting Backend Project
 
-## Summary of this project
+This repository contains the backend code for a complete video hosting website similar to YouTube. The project is built using Node.js, Express.js, MongoDB, Mongoose, JWT, bcrypt, and other technologies.
 
-This project is a complex backend project that is built with nodejs, expressjs, mongodb, mongoose, jwt, bcrypt, and many more. This project is a complete backend project that has all the features that a backend project should have. This is a complete video hosting website similar to youtube with all the features like login, signup, upload video, like, dislike, comment, reply, subscribe, unsubscribe, and many more.
+## Features
 
-Project uses all standard practices like JWT, bcrypt, access tokens, refresh Tokens and many more.
+- User authentication (login/signup)
+- Video upload
+- Like/dislike videos
+- Commenting and replying to comments
+- Subscription and unsubscription functionality
+- ......still in progress
+
+## Testing with Postman
+
+To test the API endpoints using Postman, follow these steps:
+
+Once, this project will be completed then Postman follow up steps will be uploaded
+
