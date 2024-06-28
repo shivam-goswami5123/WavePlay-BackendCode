@@ -2,7 +2,7 @@
 
 This repository contains the backend code for a complete video hosting website similar to YouTube. The project is built using Node.js, Express.js, MongoDB, Mongoose, JWT, bcrypt, and other technologies.
 
-![WavePlay Model]("https://drive.google.com/file/d/1Zx4tKJOye6L5ponnJkGigM5DEV30pWeG/view?usp=sharing")
+![WavePlay Model](public/assets/diagram-export-28-06-2024-19_04_10.png)
 
 
 ## Features
