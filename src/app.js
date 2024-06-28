@@ -16,10 +16,12 @@ app.use(cookieParser());
 //routes import
 import userRouter from "./routes/user.routes.js"; //we can give custom names only when export is default
 import tweetRouter from "./routes/tweet.routes.js";
+import videoRouter from "./routes/video.routes.js"
 
 //routes declaration
 app.use("/api/v1/users", userRouter); //good standard practice
 //when this routes on url hits userRouter activates
 app.use("/api/v1/tweets",tweetRouter);
+app.use("/api/v1/videos",videoRouter)
 
 export {app};

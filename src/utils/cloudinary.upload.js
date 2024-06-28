@@ -7,6 +7,25 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+const destroyCloudVideo = async (localFilePath) => {
+  try {
+    const result = await cloudinary.uploader.destroy(localFilePath, { resource_type: 'video' });
+    return true
+  } catch (error) {
+    console.error('Error deleting video:', error);
+  }
+};
+
+const destroyCloudImage = async (localFilePath)=>{
+  try{
+      await cloudinary.uploader.destroy(localFilePath)
+      return true
+  }catch (error){
+      return null
+  }
+}
+
+
 const uploadOnCloudinary = async(localFilePath) =>{
     try{
         if(!localFilePath) return null;
@@ -28,6 +47,7 @@ const uploadOnCloudinary = async(localFilePath) =>{
     }
 };
 
+/*
 const deleteOnCloudinary=async(imageUrl)=>{
   try {
     // Extract public ID from the image URL
@@ -45,8 +65,9 @@ const deleteOnCloudinary=async(imageUrl)=>{
     throw error;
   }
 }
+*/
 
-export {uploadOnCloudinary,deleteOnCloudinary};
+export {destroyCloudImage,destroyCloudVideo,uploadOnCloudinary};
 
 /*Demo Code
 cloudinary.uploader.upload("https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg",
