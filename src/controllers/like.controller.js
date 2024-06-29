@@ -1,5 +1,5 @@
 import mongoose, {isValidObjectId} from "mongoose"
-import {Like} from "../models/like.model.js"
+import {Like} from "../models/like.models.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
@@ -20,7 +20,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
 
     const likedVideo = await Like.create({ video: videoId, likedBy: req.user._id })
 
-    return res.status(201).json(new ApiResponse(200, likedVideo, "Like Added Successfully"))
+    return res.status(201).json(new ApiResponse(200, likedVideo, "Video Like Added Successfully"))
 
 })
 
@@ -40,7 +40,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
 
     const likedComment = await Like.create({ comment: commentId, likedBy: req.user._id })
 
-    return res.status(201).json(new ApiResponse(200, likedComment, "Comment Added Successfully"))
+    return res.status(201).json(new ApiResponse(200, likedComment, "Comment Like Added Successfully"))
 
 })
 
@@ -61,7 +61,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 
     const likedTweet = await Like.create({ tweet: tweetId, likedBy: req.user._id })
 
-    return res.status(201).json(new ApiResponse(200, likedTweet, "Tweet Added Successfully"))
+    return res.status(201).json(new ApiResponse(200, likedTweet, "Tweet Like Added Successfully"))
 }
 )
 
