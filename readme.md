@@ -1,20 +1,33 @@
 # Video Hosting Backend Project
 
-This repository contains the backend code for a complete video hosting website similar to YouTube. The project is built using Node.js, Express.js, MongoDB, Mongoose, JWT, bcrypt, and other technologies.
+# Introduction
+
+◦ This is a full-fledged backend project, excluding frontend components, rigorously tested on Postman for seamless
+operation, while maintaining compliance with industry standards and best practices.
+
+◦ Developed a comprehensive video hosting website with full backend functionalities using Node.js, Express.js,
+MongoDB, Mongoose, JWT, and bcrypt.
+
+◦ Implemented standard security practices such as JWT, bcrypt, access tokens, and refresh tokens for user authentication
+and authorization.
+
+# Model Diagram
 
 ![WavePlay Model](public/assets/diagram-export-28-06-2024-19_04_10.png)
 
 
-## Features
+# Features
 
-- User authentication (login/signup)
-- Video upload
+- User (Authentication, Update Details, Tokens, Password Encryption, Watch History, User Profile)
+- Dashboard
+- Video (Upload, Get, Delete, Update, Publish Status)
 - Like/dislike videos
-- Commenting and replying to comments
-- Subscription and unsubscription functionality
-- ......still in progress
+- Comment
+- Subscription and Unsubscription 
+- Playlist (Create, Delete, Add Video, Remove Video)
+- Tweet ( Common Page to show all  user's tweets)
 
-## Route Testing With Postman
+## Instructions for testing with Postman
 
 Follow the steps below to fork a copy of the project collection from Postman and test all API routes.
 
