@@ -27,7 +27,7 @@ and authorization.
 - Playlist (Create, Delete, Add Video, Remove Video)
 - Tweet ( Common Page to show all  user's tweets)
 
-## Instructions for testing with Postman
+# Instructions for testing with Postman
 
 Follow the steps below to fork a copy of the project collection from Postman and test all API routes.
 
@@ -41,19 +41,20 @@ Follow the steps below to fork a copy of the project collection from Postman and
 ### 1. Fork the Postman Collection
 
 1. **Open Postman**: Launch the Postman application.
-2. **Navigate to the Collection Link**: Open the shared Postman collection link in your browser. This link should be provided by the project owner.
+2. **Navigate to the Collection Link**: Open the shared Postman collection [link](https://elements.getpostman.com/redirect?entityId=31853383-989137d4-7b56-487f-83ed-9e0ced232422&entityType=collection) in your browser. This link should be provided by the project owner.
 3. **Fork the Collection**:
    - Click on the **Fork** button in the Postman interface.
    - Select your workspace where you want to fork this collection.
    - Click **Fork Collection**.
 
+     
 ### 2. Set Up Environment Variables
 
 1. **Navigate to the Environment**:
    - In Postman, go to the **Environments** tab on the left sidebar.
    - Create a new environment or select an existing one.
 2. **Add Environment Variables**:
-   - Add the necessary environment variables that your API requires (e.g., `base_url`, `api_key`, `token`).
+   - Add the necessary environment variables that your API requires (e.g., `server`).
    - Make sure to replace placeholder values with actual values relevant to your setup.
 
 ### 3. Import Environment File (Optional)
@@ -104,7 +105,6 @@ If there are updates to the original collection:
 
 - If you encounter issues with environment variables, double-check that all necessary variables are defined and correctly assigned.
 - For authentication errors, ensure your API keys or tokens are valid and not expired.
-- Refer to the project documentation for specific details on each API route and its expected behavior.
 
 ---
 
