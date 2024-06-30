@@ -1,4 +1,4 @@
-# Video Hosting Backend Project
+# WavePlay : Video Hosting Backend Project
 
 # Introduction
 
